@@ -8,8 +8,9 @@ Mesh::Mesh(const std::vector<Point3D>& verts,
 {
 }
 
-void Mesh::rayTracing(Point3D eye, Point3D p_screen, Point3D p_world, Image* img)
+int Mesh::rayTracing(Point3D eye, Point3D p_world, pixel& p)
 {
+	int retVal = 0; 
 	Point3D p0;
 	Point3D p1;
 	Point3D p2;
@@ -57,17 +58,17 @@ void Mesh::rayTracing(Point3D eye, Point3D p_screen, Point3D p_world, Image* img
 
 			x1 = p1[0] - p0[0];
 			x2 = p2[0] - p0[0];
-			x3 = p_world[0] - eye[0];
+			x3 = - p_world[0] + eye[0];
 			r1 = eye[0] - p0[0];
 
 			y1 = p1[1] - p0[1];
 			y2 = p2[1] - p0[1];
-			y3 = p_world[1] - eye[1];
+			y3 = - p_world[1] + eye[1];
 			r2 = eye[1] - p0[1];
 
 			z1 = p1[2] - p0[2];
 			z2 = p2[2] - p0[2];
-			z3 = p_world[2] - eye[2];
+			z3 = - p_world[2] + eye[2];
 			r3 = eye[2] - p0[2];
 
 			d = det(x1, x2, x3, y1, y2, y3, z1, z2, z3);
@@ -81,15 +82,21 @@ void Mesh::rayTracing(Point3D eye, Point3D p_screen, Point3D p_world, Image* img
 
 			// std::cerr << "beta = " << beta << ", gamma = " << gamma << ", t = " << t << std::endl;
 
-			if ( beta >= 0 && gamma >= 0 && (beta + gamma) <= 1) {
+			if ( beta >= 0 && gamma >= 0 && (beta + gamma) <= 1 && t > 0) {
 				// the ray hits the triangle. 
-				(*img)(p_screen[0], p_screen[1], 0) = m_material->getDiffuseColor().R();
-				(*img)(p_screen[0], p_screen[1], 1) = m_material->getDiffuseColor().G();
-				(*img)(p_screen[0], p_screen[1], 2) = m_material->getDiffuseColor().B();
+				retVal = 1;
+				if ( p.z_buffer == 0 || p.z_buffer > t ) {
+					p.z_buffer = t;
+					p.color = Colour(m_material->getDiffuseColor().R(), m_material->getDiffuseColor().G(),  m_material->getDiffuseColor().B());
+				}
+				// (*img)(p_screen[0], p_screen[1], 0) = m_material->getDiffuseColor().R();
+				// (*img)(p_screen[0], p_screen[1], 1) = m_material->getDiffuseColor().G();
+				// (*img)(p_screen[0], p_screen[1], 2) = m_material->getDiffuseColor().B();
 				break;
 			}
 		}		
 	}
+	return retVal;
 }
 
 std::ostream& operator<<(std::ostream& out, const Mesh& mesh)

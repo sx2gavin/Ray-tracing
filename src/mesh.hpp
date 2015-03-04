@@ -14,7 +14,7 @@ public:
 
   typedef std::vector<int> Face;
 
-  virtual void rayTracing(Point3D eye, Point3D p_screen, Point3D p_world, Image* img);
+  virtual int rayTracing(Point3D eye, Point3D p_world, pixel& p);
   
 private:
   std::vector<Point3D> m_verts;

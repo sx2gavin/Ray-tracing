@@ -33,11 +33,19 @@ bool SceneNode::is_joint() const
 	return false;
 }
 
-void SceneNode::rayTracing(Point3D eye, Point3D p_screen,  Point3D p_world, Image* img)
+int SceneNode::rayTracing(Point3D eye, Point3D p_world, pixel& p)
 {
+	pixel temp;
+	int retVal = 0;
 	for (std::list<SceneNode*>::const_iterator i = m_children.begin(); i != m_children.end(); ++i) {
-		(*i)->rayTracing(eye, p_screen,  p_world, img);
+		if ( (*i)->rayTracing(eye,  p_world, temp)) {
+			retVal = 1;
+			if ( p.z_buffer == 0 || p.z_buffer > temp.z_buffer ) {
+				p = temp;
+			}
+		}
 	}
+	return retVal;
 }
 
 JointNode::JointNode(const std::string& name)
@@ -78,9 +86,20 @@ GeometryNode::~GeometryNode()
 {
 }
 
-void GeometryNode::rayTracing(Point3D eye, Point3D p_screen, Point3D p_world, Image* img)
+int GeometryNode::rayTracing(Point3D eye, Point3D p_world, pixel& p)
 {
+	int retVal = 0;
+	pixel temp;
 	m_primitive->setMaterial(m_material);
-	m_primitive->rayTracing(eye, p_screen, p_world, img);	
-	SceneNode::rayTracing(eye, p_screen, p_world, img);
+	if ( m_primitive->rayTracing(eye, p_world, temp)) {
+		retVal = 1;
+		p = temp;
+	}
+	if ( SceneNode::rayTracing(eye, p_world, temp)) {
+		retVal = 1;
+		if (p.z_buffer > temp.z_buffer) {
+			p = temp;
+		}
+	}
+	return retVal;
 }

@@ -35,6 +35,7 @@ void a4_render(// What to render
   for (int y = 0; y < height; y++) {
 	 for (int x = 0; x < width; x++) {
 		// for each pixel, find the p_world that is corresponding to the pixel (x, y).
+		pixel p;
 		Point3D p_screen(x, y, 0);
 
 		// step 1. translate
@@ -78,26 +79,13 @@ void a4_render(// What to render
 
 		// std::cerr << "p_world = " << p_world << std::endl;
 
-		root->rayTracing(eye, Point3D(x, y, 0), p_world, &img);
+
+		if (root->rayTracing(eye, p_world, p)) {
+			img(x, y, 0) = p.color.R();
+			img(x, y, 1) = p.color.G();
+			img(x, y, 2) = p.color.B();
+		}
 	 }
   }
-
   img.savePng(filename);  
-  // For now, just make a sample image.
-
-//  Image img(width, height, 3);
-//
-//  for (int y = 0; y < height; y++) {
-//    for (int x = 0; x < height; x++) {
-//      // Red: increasing from top to bottom
-//      img(x, y, 0) = (double)y / height;
-//      // Green: increasing from left to right
-//      img(x, y, 1) = (double)x / width;
-//      // Blue: in lower-left and upper-right corners
-//      img(x, y, 2) = ((y < height/2 && x < height/2)
-//                      || (y >= height/2 && x >= height/2)) ? 1.0 : 0.0;
-//    }
-//  }
-//  img.savePng(filename);
-  
 }

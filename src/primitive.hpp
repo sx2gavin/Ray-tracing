@@ -14,7 +14,7 @@ class Primitive {
 			m_material = m;
 		}
 
-		virtual void rayTracing(Point3D eye, Point3D p_screen, Point3D p_world, Image* img) = 0;
+		virtual int rayTracing(Point3D eye, Point3D p_world, pixel& p) = 0;
 
 	protected:
 		Material*  m_material;	
@@ -23,14 +23,14 @@ class Primitive {
 class Sphere : public Primitive {
 	public:
 		virtual ~Sphere();
-		virtual void rayTracing(Point3D eye, Point3D p_screen, Point3D p_world, Image* img)
+		virtual int rayTracing(Point3D eye, Point3D p_world, pixel& p)
 		{}
 };
 
 class Cube : public Primitive {
 	public:
 		virtual ~Cube();
-		virtual void rayTracing(Point3D eye, Point3D p_screen, Point3D p_world, Image* img){}
+		virtual int rayTracing(Point3D eye, Point3D p_world, pixel& p){}
 };
 
 class NonhierSphere : public Primitive {
@@ -41,7 +41,7 @@ class NonhierSphere : public Primitive {
 		}
 		virtual ~NonhierSphere();
 
-		virtual void rayTracing(Point3D eye, Point3D p_screen, Point3D p_world, Image* img);
+		virtual int rayTracing(Point3D eye, Point3D p_world, pixel& p);
 
 		Point3D getPosition()
 		{
@@ -64,7 +64,7 @@ class NonhierBox : public Primitive {
 		NonhierBox(const Point3D& pos, double size);
 
 		virtual ~NonhierBox();
-		virtual void rayTracing(Point3D eye, Point3D p_screen, Point3D p_world, Image* img);
+		virtual int rayTracing(Point3D eye, Point3D p_world, pixel& p);
 
 	private:
 		Point3D m_pos;

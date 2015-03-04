@@ -45,7 +45,7 @@ class SceneNode {
 
 		// Returns true if and only if this node is a JointNode
 		virtual bool is_joint() const; 
-		virtual void rayTracing(Point3D eye, Point3D p_screen, Point3D p_world, Image* img);
+		virtual int rayTracing(Point3D eye,  Point3D p_world, pixel& p);
 
 	protected:
 
@@ -95,7 +95,7 @@ class GeometryNode : public SceneNode {
 			m_material = material;
 		}
 		
-		virtual void rayTracing(Point3D eye, Point3D p_screen, Point3D p_world, Image* img);
+		virtual int rayTracing(Point3D eye, Point3D p_world, pixel& p);
 
 	protected:
 		Material* m_material;

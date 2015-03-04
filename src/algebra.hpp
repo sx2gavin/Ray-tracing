@@ -489,6 +489,10 @@ inline std::ostream& operator <<(std::ostream& os, const Colour& c)
 
 struct Pixel
 {
+	Pixel():z_buffer(0), color(Colour(0.0, 0.0, 0.0)){}
+	
+	Pixel(double z_buffer, Colour color):z_buffer(z_buffer), color(color){}
+
 	double z_buffer;
 	Colour color;
 

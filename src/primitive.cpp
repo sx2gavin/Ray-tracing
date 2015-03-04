@@ -17,19 +17,25 @@ NonhierSphere::~NonhierSphere()
 {
 }
 
-void NonhierSphere::rayTracing(Point3D eye, Point3D p_screen, Point3D p_world, Image* img) 
+int NonhierSphere::rayTracing(Point3D eye, Point3D p_world, pixel& p) 
 {
+	int retVal = 0;
 	double a = (p_world - eye).dot(p_world - eye);
 	double b = 2 * (p_world - eye).dot(eye - m_pos);
 	double c = (eye - m_pos).dot(eye - m_pos) - m_radius * m_radius;
 	double roots[2]; 
 	
-	if (quadraticRoots(a, b, c, roots) >= 1) {	
-		// std::cerr << "drawing the sphere" << std::endl;
-		(*img)(p_screen[0], p_screen[1], 0) = m_material->getDiffuseColor().R();
-		(*img)(p_screen[0], p_screen[1], 1) = m_material->getDiffuseColor().G();
-		(*img)(p_screen[0], p_screen[1], 2) = m_material->getDiffuseColor().B();
+	if (quadraticRoots(a, b, c, roots) == 1) {	
+		p.z_buffer = roots[0];
+		p.color = Colour(m_material->getDiffuseColor().R(), m_material->getDiffuseColor().G(),  m_material->getDiffuseColor().B());
+		retVal = 1;
+	} else if (quadraticRoots(a, b, c, roots) > 1) {
+		p.z_buffer = std::min(roots[0], roots[1]);
+		p.color = Colour(m_material->getDiffuseColor().R(), m_material->getDiffuseColor().G(),  m_material->getDiffuseColor().B());
+		retVal = 1;
 	}
+
+	return retVal;
 }
 
 NonhierBox::NonhierBox(const Point3D& pos, double size)
@@ -43,10 +49,6 @@ NonhierBox::NonhierBox(const Point3D& pos, double size)
 		}
 	}
 
-	for ( std::vector<Point3D>::const_iterator I = m_verts.begin(); I != m_verts.end(); ++I) {
-		std::cerr << *I << std::endl;
-	}
-	
 	m_faces.resize(6);
 	for (int i = 0; i < 6; i++) {
 		m_faces[i].resize(4);
@@ -87,10 +89,11 @@ NonhierBox::~NonhierBox()
 {
 }
 
-void NonhierBox::rayTracing(Point3D eye, Point3D p_screen, Point3D p_world, Image* img)
+int NonhierBox::rayTracing(Point3D eye, Point3D p_world, pixel& p)
 {
 	
 	// std::cerr << " NohierBox ray tracer called" << std::endl;
+	int retVal = 0; 
 	Point3D p0;
 	Point3D p1;
 	Point3D p2;
@@ -142,17 +145,17 @@ void NonhierBox::rayTracing(Point3D eye, Point3D p_screen, Point3D p_world, Imag
 
 			x1 = p1[0] - p0[0];
 			x2 = p2[0] - p0[0];
-			x3 = p_world[0] - eye[0];
+			x3 = - p_world[0] + eye[0];
 			r1 = eye[0] - p0[0];
 
 			y1 = p1[1] - p0[1];
 			y2 = p2[1] - p0[1];
-			y3 = p_world[1] - eye[1];
+			y3 = - p_world[1] + eye[1];
 			r2 = eye[1] - p0[1];
 
 			z1 = p1[2] - p0[2];
 			z2 = p2[2] - p0[2];
-			z3 = p_world[2] - eye[2];
+			z3 = - p_world[2] + eye[2];
 			r3 = eye[2] - p0[2];
 
 			d = det(x1, x2, x3, y1, y2, y3, z1, z2, z3);
@@ -163,16 +166,24 @@ void NonhierBox::rayTracing(Point3D eye, Point3D p_screen, Point3D p_world, Imag
 			beta = d1 / d;
 			gamma = d2 / d;
 			t = d3 / d;
+			
+			// std::cerr << "t = " << t << std::endl;
 
 			// std::cerr << "beta = " << beta << ", gamma = " << gamma << ", t = " << t << std::endl;
 
-			if ( beta >= 0 && gamma >= 0 && (beta + gamma) <= 1) {
+			if ( beta >= 0 && gamma >= 0 && (beta + gamma) <= 1 && t > 0) {
 				// the ray hits the triangle. 
-				(*img)(p_screen[0], p_screen[1], 0) = m_material->getDiffuseColor().R();
-				(*img)(p_screen[0], p_screen[1], 1) = m_material->getDiffuseColor().G();
-				(*img)(p_screen[0], p_screen[1], 2) = m_material->getDiffuseColor().B();
+				retVal = 1;
+				if ( p.z_buffer == 0 || p.z_buffer > t) {
+					p.z_buffer = t;
+					p.color = Colour(m_material->getDiffuseColor().R(), m_material->getDiffuseColor().G(),  m_material->getDiffuseColor().B());
+				}
+				// (*img)(p_screen[0], p_screen[1], 0) = m_material->getDiffuseColor().R();
+				// (*img)(p_screen[0], p_screen[1], 1) = m_material->getDiffuseColor().G();
+				// (*img)(p_screen[0], p_screen[1], 2) = m_material->getDiffuseColor().B();
 				break;
 			}
 		}
 	}
+	return retVal;
 }
