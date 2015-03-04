@@ -19,21 +19,13 @@ NonhierSphere::~NonhierSphere()
 
 void NonhierSphere::rayTracing(Point3D eye, Point3D p_screen, Point3D p_world, Image* img) 
 {
-	// std::cerr << "p_world is " << p_world << std::endl;
-	// std::cerr << "eye is " << eye << std::endl;
-	// std::cerr << "m_pos is " << m_pos << std::endl;
-	// std::cerr << "m_radius is " << m_radius << std::endl;
-
 	double a = (p_world - eye).dot(p_world - eye);
 	double b = 2 * (p_world - eye).dot(eye - m_pos);
 	double c = (eye - m_pos).dot(eye - m_pos) - m_radius * m_radius;
 	double roots[2]; 
-	// std::cerr << "a is " << a << std::endl;
-	// std::cerr << "b is " << b << std::endl;
-	// std::cerr << "c is " << c << std::endl;
 	
 	if (quadraticRoots(a, b, c, roots) >= 1) {	
-		std::cerr << "drawing the sphere" << std::endl;
+		// std::cerr << "drawing the sphere" << std::endl;
 		(*img)(p_screen[0], p_screen[1], 0) = m_material->getDiffuseColor().R();
 		(*img)(p_screen[0], p_screen[1], 1) = m_material->getDiffuseColor().G();
 		(*img)(p_screen[0], p_screen[1], 2) = m_material->getDiffuseColor().B();
@@ -179,6 +171,7 @@ void NonhierBox::rayTracing(Point3D eye, Point3D p_screen, Point3D p_world, Imag
 				(*img)(p_screen[0], p_screen[1], 0) = m_material->getDiffuseColor().R();
 				(*img)(p_screen[0], p_screen[1], 1) = m_material->getDiffuseColor().G();
 				(*img)(p_screen[0], p_screen[1], 2) = m_material->getDiffuseColor().B();
+				break;
 			}
 		}
 	}

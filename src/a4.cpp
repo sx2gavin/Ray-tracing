@@ -76,13 +76,12 @@ void a4_render(// What to render
 		p_world[1] = p_screen[1] + eye[1];
 		p_world[2] = p_screen[2] + eye[2];
 
-		std::cerr << "p_world = " << p_world << std::endl;
+		// std::cerr << "p_world = " << p_world << std::endl;
 
 		root->rayTracing(eye, Point3D(x, y, 0), p_world, &img);
 	 }
   }
 
-  img( 1, 1, 0) = 1;
   img.savePng(filename);  
   // For now, just make a sample image.
 

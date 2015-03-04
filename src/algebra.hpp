@@ -487,6 +487,21 @@ inline std::ostream& operator <<(std::ostream& os, const Colour& c)
   return os << "c<" << c.R() << "," << c.G() << "," << c.B() << ">";
 }
 
+struct Pixel
+{
+	double z_buffer;
+	Colour color;
+
+	Pixel& operator =(const Pixel& p)
+	{
+		z_buffer = p.z_buffer;
+		color = p.color;		
+		return *this;
+	}
+};
+
+typedef struct Pixel pixel;
+
 float det(float a11, float a12,float a13,float a21,float a22,float a23,float a31,float a32,float a33);
 
 #endif // CS488_ALGEBRA_HPP
