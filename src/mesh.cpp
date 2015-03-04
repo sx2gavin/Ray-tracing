@@ -8,7 +8,7 @@ Mesh::Mesh(const std::vector<Point3D>& verts,
 {
 }
 
-int Mesh::rayTracing(Point3D eye, Point3D p_world, Colour ambient, std::list<Light*> lights, pixel& p)
+int Mesh::rayTracing(Point3D eye, Point3D p_world, pixel& p)
 {
 	int retVal = 0; 
 	Point3D p0;
@@ -80,18 +80,15 @@ int Mesh::rayTracing(Point3D eye, Point3D p_world, Colour ambient, std::list<Lig
 			gamma = d2 / d;
 			t = d3 / d;
 
-			// std::cerr << "beta = " << beta << ", gamma = " << gamma << ", t = " << t << std::endl;
 
 			if ( beta >= 0 && gamma >= 0 && (beta + gamma) <= 1 && t > 0) {
 				// the ray hits the triangle. 
 				retVal = 1;
 				if ( p.z_buffer == 0 || p.z_buffer > t ) {
 					p.z_buffer = t;
-					p.color = Colour(m_material->getDiffuseColor().R(), m_material->getDiffuseColor().G(),  m_material->getDiffuseColor().B());
+					p.material = m_material;
+					p.normal = (p0 - p1).cross(p1 - p2); 
 				}
-				// (*img)(p_screen[0], p_screen[1], 0) = m_material->getDiffuseColor().R();
-				// (*img)(p_screen[0], p_screen[1], 1) = m_material->getDiffuseColor().G();
-				// (*img)(p_screen[0], p_screen[1], 2) = m_material->getDiffuseColor().B();
 				break;
 			}
 		}		

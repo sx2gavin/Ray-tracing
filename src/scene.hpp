@@ -6,6 +6,8 @@
 #include "primitive.hpp"
 #include "material.hpp"
 #include "image.hpp"
+#include "pixel.hpp"
+
 
 class SceneNode {
 	public:
@@ -45,7 +47,7 @@ class SceneNode {
 
 		// Returns true if and only if this node is a JointNode
 		virtual bool is_joint() const; 
-		virtual int rayTracing(Point3D eye, Point3D p_world, Colour ambient,  std::list<Light*> lights, pixel& p);
+		virtual int rayTracing(Point3D eye, Point3D p_world, pixel& p);
 
 	protected:
 
@@ -95,7 +97,7 @@ class GeometryNode : public SceneNode {
 			m_material = material;
 		}
 		
-		virtual int rayTracing(Point3D eye, Point3D p_world, Colour ambient,  std::list<Light*> lights, pixel& p);
+		virtual int rayTracing(Point3D eye, Point3D p_world, pixel& p);
 
 	protected:
 		Material* m_material;

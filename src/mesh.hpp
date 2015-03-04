@@ -6,6 +6,7 @@
 #include <iosfwd>
 #include "primitive.hpp"
 #include "algebra.hpp"
+#include "pixel.hpp"
 
 // A polygonal mesh.
 class Mesh : public Primitive {
@@ -15,7 +16,7 @@ public:
 
   typedef std::vector<int> Face;
 
-  virtual int rayTracing(Point3D eye, Point3D p_world, Colour ambient, std::list<Light*> lights, pixel& p);
+  virtual int rayTracing(Point3D eye, Point3D p_world, pixel& p);
   
 private:
   std::vector<Point3D> m_verts;

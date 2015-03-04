@@ -1,5 +1,6 @@
 #include "a4.hpp"
 #include "image.hpp"
+#include "pixel.hpp"
 
 void a4_render(// What to render
                SceneNode* root,
@@ -79,11 +80,45 @@ void a4_render(// What to render
 
 		// std::cerr << "p_world = " << p_world << std::endl;
 
+		Colour pixel_color(0, 0, 0);
 
-		if (root->rayTracing(eye, p_world, ambient, lights, p)) {
-			img(x, y, 0) = p.color.R();
-			img(x, y, 1) = p.color.G();
-			img(x, y, 2) = p.color.B();
+		if (root->rayTracing(eye, p_world, p)) {
+			// Adding Phong shading.
+			Point3D hitPoint = eye + p.z_buffer * (p_world - eye);
+			pixel_color  = ambient * p.material->getDiffuseColor();
+
+			for (std::list<Light*>::const_iterator I = lights.begin(); I != lights.end(); I++) { 
+				Vector3D lightDirection = (*I)->position - hitPoint;
+				double distance = lightDirection.length();
+				double attenuation = 1 / ((*I)->falloff[0] + distance* (*I)->falloff[1] + distance * distance * (*I)->falloff[2]);
+				Vector3D camera = eye - hitPoint;
+				
+				// normal correction	
+				if (p.normal.dot(camera) < 0) {
+					p.normal = -p.normal;
+				}
+				// diffuse
+				p.normal.normalize();
+				lightDirection.normalize();
+				float cosTheta = clamp(p.normal.dot(lightDirection), 0, 1);
+
+				Vector3D reflection = -lightDirection - 2 * ((-lightDirection).dot(p.normal)) * p.normal;
+				reflection.normalize();
+				camera.normalize();
+				float cosAlpha = clamp(camera.dot(reflection), 0, 1);
+
+				pixel_color =
+					// ambient color
+					pixel_color +
+					// diffuse color
+					p.material->getDiffuseColor() * ( cosTheta * (*I)->colour ) * attenuation +
+					// specular color
+					p.material->getSpecularColor() * (std::pow(cosAlpha, p.material->getShininess()) * (*I)->colour) * attenuation;
+			}
+
+			img(x, y, 0) = pixel_color.R();
+			img(x, y, 1) = pixel_color.G();
+			img(x, y, 2) = pixel_color.B();
 		}
 	 }
   }

@@ -1,7 +1,7 @@
 -- A polygonal approximation to a cylinder
 
 mat1 = gr.material({1.0, 1.0, 1.0}, {0.5, 0.7, 0.5}, 5)
-mat2 = gr.material({0.0, 1.0, 0.0}, {0.5, 0.7, 0.5}, 25)
+mat2 = gr.material({0.0, 1.0, 0.0}, {0.5, 0.7, 0.5}, 50)
 mat3 = gr.material({0.0, 0.0, 1.0}, {0.5, 0.7, 0.5}, 5)
 
 scene_root = gr.node('root')
@@ -30,15 +30,15 @@ s4 = gr.nh_sphere('s4', {0.5, 0, 0.8}, 0.25)
 scene_root:add_child(s4)
 s4:set_material(mat3)
 
--- s2 = gr.nh_box('s2', {0, -1, 0}, 0.5)
--- scene_root:add_child(s2)
--- s2:set_material(mat1)
--- 
+s2 = gr.nh_box('s2', {-0.25, -0.5, 0}, 0.5)
+scene_root:add_child(s2)
+s2:set_material(mat2)
+
 -- s3 = gr.nh_box('s3', {0, -1, 1}, 0.25)
 -- scene_root:add_child(s3)
 -- s3:set_material(mat2)
 
-white_light = gr.light({3.0, 0.0, 6.0}, {0.9, 0.9, 0.9}, {1, 0, 0})
-orange_light = gr.light({-6.0, -6.0, 6.0}, {1.0, 0.0, 0.0}, {1, 0, 0})
+white_light = gr.light({0.0, 0.0, 6.0}, {0.9, 0.9, 0.9}, {1, 0, 0})
+orange_light = gr.light({6.0, 0.0, 6.0}, {1.0, 0.0, 0.0}, {1, 0, 0})
 
 gr.render(scene_root, 'triangle.png', 500, 500, {0, 0, 7}, {0, 0, -1}, {0, 1, 0}, 50, {0.1, 0.1, 0.1}, {orange_light, white_light}) 

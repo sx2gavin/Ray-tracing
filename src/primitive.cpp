@@ -17,7 +17,7 @@ NonhierSphere::~NonhierSphere()
 {
 }
 
-int NonhierSphere::rayTracing(Point3D eye, Point3D p_world, Colour ambient, std::list<Light*> lights, pixel& p) 
+int NonhierSphere::rayTracing(Point3D eye, Point3D p_world, pixel& p) 
 {
 	int retVal = 0;
 	double a = (p_world - eye).dot(p_world - eye);
@@ -27,15 +27,18 @@ int NonhierSphere::rayTracing(Point3D eye, Point3D p_world, Colour ambient, std:
 	
 	if (quadraticRoots(a, b, c, roots) == 1) {	
 		p.z_buffer = roots[0];
-		p.color = ambient * m_material->getDiffuseColor();
 		retVal = 1;
 	} else if (quadraticRoots(a, b, c, roots) > 1) {
 		p.z_buffer = std::min(roots[0], roots[1]);
-		p.color = ambient * m_material->getDiffuseColor();
 		retVal = 1;
 	}
 
 	if (retVal) {
+		p.material = m_material;
+		p.normal = eye + p.z_buffer * (p_world - eye) - m_pos;
+	}
+
+	/*if (retVal) {
 	// Adding Phong shading.
 	
 		for (std::list<Light*>::const_iterator I = lights.begin(); I != lights.end(); I++) { 
@@ -73,7 +76,7 @@ int NonhierSphere::rayTracing(Point3D eye, Point3D p_world, Colour ambient, std:
 			//	p.color = cosTheta * p.color * (*I)->colour;	
 
 		}
-	}
+	}*/
 	return retVal;
 }
 
@@ -128,7 +131,7 @@ NonhierBox::~NonhierBox()
 {
 }
 
-int NonhierBox::rayTracing(Point3D eye, Point3D p_world, Colour ambient, std::list<Light*> lights,  pixel& p)
+int NonhierBox::rayTracing(Point3D eye, Point3D p_world,  pixel& p)
 {
 	
 	// std::cerr << " NohierBox ray tracer called" << std::endl;
@@ -205,21 +208,15 @@ int NonhierBox::rayTracing(Point3D eye, Point3D p_world, Colour ambient, std::li
 			beta = d1 / d;
 			gamma = d2 / d;
 			t = d3 / d;
-			
-			// std::cerr << "t = " << t << std::endl;
-
-			// std::cerr << "beta = " << beta << ", gamma = " << gamma << ", t = " << t << std::endl;
 
 			if ( beta >= 0 && gamma >= 0 && (beta + gamma) <= 1 && t > 0) {
 				// the ray hits the triangle. 
 				retVal = 1;
 				if ( p.z_buffer == 0 || p.z_buffer > t) {
 					p.z_buffer = t;
-					p.color = Colour(m_material->getDiffuseColor().R(), m_material->getDiffuseColor().G(),  m_material->getDiffuseColor().B());
+					p.material = m_material;
+					p.normal = (p0 - p1).cross(p1 - p2);
 				}
-				// (*img)(p_screen[0], p_screen[1], 0) = m_material->getDiffuseColor().R();
-				// (*img)(p_screen[0], p_screen[1], 1) = m_material->getDiffuseColor().G();
-				// (*img)(p_screen[0], p_screen[1], 2) = m_material->getDiffuseColor().B();
 				break;
 			}
 		}
