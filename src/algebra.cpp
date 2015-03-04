@@ -141,3 +141,8 @@ Matrix4x4 Matrix4x4::invert() const
 
   return ret;
 }
+
+float det(float a11, float a12,float a13,float a21,float a22,float a23,float a31,float a32,float a33)
+{
+	return (a11 * (a22 * a33 - a23 * a32) - a12 * (a21 * a33 - a23 * a31) + a13 * (a21 * a32 - a22 * a31));
+}

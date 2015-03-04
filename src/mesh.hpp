@@ -13,6 +13,8 @@ public:
        const std::vector< std::vector<int> >& faces);
 
   typedef std::vector<int> Face;
+
+  virtual void rayTracing(Point3D eye, Point3D p_screen, Point3D p_world, Image* img);
   
 private:
   std::vector<Point3D> m_verts;

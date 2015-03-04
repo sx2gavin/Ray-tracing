@@ -8,6 +8,84 @@ Mesh::Mesh(const std::vector<Point3D>& verts,
 {
 }
 
+void Mesh::rayTracing(Point3D eye, Point3D p_screen, Point3D p_world, Image* img)
+{
+	Point3D p0;
+	Point3D p1;
+	Point3D p2;
+	Vector3D n;
+	float num;
+	float den;
+	float x1;
+	float x2;
+	float x3;
+	float r1;
+	float y1;
+	float y2;
+	float y3;
+	float r2;
+	float z1;
+	float z2;
+	float z3;
+	float r3;
+	float d ;
+	float d1;
+	float d2;
+	float d3;
+	float beta;
+	float gamma;
+	float t;
+		
+	for (std::vector<Mesh::Face>::const_iterator I = m_faces.begin(); I != m_faces.end(); ++I) {
+		p0 = m_verts[(*I)[0]];
+		p1 = m_verts[(*I)[1]];
+		p2 = m_verts[(*I)[2]];
+
+		n = (p1 - p0).cross(p2 - p0);
+		//num = - n.dot(eye - p0);
+		
+		// std::cerr << "n = " << n << std::endl;
+		den = n.dot(p_world - eye);
+
+		// std::cerr << "den = " << den << std::endl;
+		// if the ray doesn't hit the plane represented by the triangle.
+		if (den == 0) continue;
+		
+		x1 = p1[0] - p0[0];
+		x2 = p2[0] - p0[0];
+		x3 = p_world[0] - eye[0];
+		r1 = eye[0] - p0[0];
+
+		y1 = p1[1] - p0[1];
+		y2 = p2[1] - p0[1];
+		y3 = p_world[1] - eye[1];
+		r2 = eye[1] - p0[1];
+
+		z1 = p1[2] - p0[2];
+		z2 = p2[2] - p0[2];
+		z3 = p_world[2] - eye[2];
+		r3 = eye[2] - p0[2];
+
+		d = det(x1, x2, x3, y1, y2, y3, z1, z2, z3);
+		d1 = det(r1, x2, x3, r2, y2, y3, r3, z2, z3);
+		d2 = det(x1, r1, x3, y1, r2, y3, z1, r3, z3);
+		d3= det(x1, x2, r1, y1, y2, r2, z1, z2, r3);
+		
+		beta = d1 / d;
+		gamma = d2 / d;
+		t = d3 / d;
+
+		// std::cerr << "beta = " << beta << ", gamma = " << gamma << ", t = " << t << std::endl;
+		
+		if ( beta >= 0 && gamma >= 0 && (beta + gamma) <= 1) {
+			// the ray hits the triangle. 
+			(*img)(p_screen[0], p_screen[1], 0) = m_material->getDiffuseColor().R();
+			(*img)(p_screen[0], p_screen[1], 1) = m_material->getDiffuseColor().G();
+			(*img)(p_screen[0], p_screen[1], 2) = m_material->getDiffuseColor().B();
+		}
+	}		
+}
+
 std::ostream& operator<<(std::ostream& out, const Mesh& mesh)
 {
   std::cerr << "mesh({";
@@ -29,3 +107,4 @@ std::ostream& operator<<(std::ostream& out, const Mesh& mesh)
   std::cerr << "});" << std::endl;
   return out;
 }
+

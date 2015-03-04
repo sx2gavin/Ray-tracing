@@ -4,28 +4,38 @@
 #include "algebra.hpp"
 
 class Material {
-public:
-  virtual ~Material();
-  virtual void apply_gl() const = 0;
+	public:
+		virtual ~Material();
+		virtual void apply_gl() const = 0;
+		virtual Colour getDiffuseColor() const = 0;
 
-protected:
-  Material()
-  {
-  }
+	protected:
+		Material()
+		{
+		}
 };
 
 class PhongMaterial : public Material {
-public:
-  PhongMaterial(const Colour& kd, const Colour& ks, double shininess);
-  virtual ~PhongMaterial();
+	public:
+		PhongMaterial(const Colour& kd, const Colour& ks, double shininess);
+		virtual ~PhongMaterial();
 
-  virtual void apply_gl() const;
+		virtual void apply_gl() const;
 
-private:
-  Colour m_kd;
-  Colour m_ks;
+		Colour getDiffuseColor() const
+		{
+			return m_kd;
+		}
+		Colour getSpecularColor() const
+		{
+			return m_ks;
+		}
 
-  double m_shininess;
+	private:
+		Colour m_kd;
+		Colour m_ks;
+
+		double m_shininess;
 };
 
 
