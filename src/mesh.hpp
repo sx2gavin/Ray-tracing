@@ -1,6 +1,7 @@
 #ifndef CS488_MESH_HPP
 #define CS488_MESH_HPP
 
+#include <list>
 #include <vector>
 #include <iosfwd>
 #include "primitive.hpp"
@@ -14,7 +15,7 @@ public:
 
   typedef std::vector<int> Face;
 
-  virtual int rayTracing(Point3D eye, Point3D p_world, pixel& p);
+  virtual int rayTracing(Point3D eye, Point3D p_world, Colour ambient, std::list<Light*> lights, pixel& p);
   
 private:
   std::vector<Point3D> m_verts;

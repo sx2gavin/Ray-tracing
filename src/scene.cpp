@@ -33,12 +33,12 @@ bool SceneNode::is_joint() const
 	return false;
 }
 
-int SceneNode::rayTracing(Point3D eye, Point3D p_world, pixel& p)
+int SceneNode::rayTracing(Point3D eye, Point3D p_world, Colour ambient, std::list<Light*> lights, pixel& p)
 {
 	pixel temp;
 	int retVal = 0;
 	for (std::list<SceneNode*>::const_iterator i = m_children.begin(); i != m_children.end(); ++i) {
-		if ( (*i)->rayTracing(eye,  p_world, temp)) {
+		if ( (*i)->rayTracing(eye,  p_world, ambient, lights, temp)) {
 			retVal = 1;
 			if ( p.z_buffer == 0 || p.z_buffer > temp.z_buffer ) {
 				p = temp;
@@ -86,16 +86,16 @@ GeometryNode::~GeometryNode()
 {
 }
 
-int GeometryNode::rayTracing(Point3D eye, Point3D p_world, pixel& p)
+int GeometryNode::rayTracing(Point3D eye, Point3D p_world, Colour ambient, std::list<Light*> lights, pixel& p)
 {
 	int retVal = 0;
 	pixel temp;
 	m_primitive->setMaterial(m_material);
-	if ( m_primitive->rayTracing(eye, p_world, temp)) {
+	if ( m_primitive->rayTracing(eye, p_world, ambient, lights, temp)) {
 		retVal = 1;
 		p = temp;
 	}
-	if ( SceneNode::rayTracing(eye, p_world, temp)) {
+	if ( SceneNode::rayTracing(eye, p_world, ambient, lights, temp)) {
 		retVal = 1;
 		if (p.z_buffer > temp.z_buffer) {
 			p = temp;

@@ -489,17 +489,19 @@ inline std::ostream& operator <<(std::ostream& os, const Colour& c)
 
 struct Pixel
 {
-	Pixel():z_buffer(0), color(Colour(0.0, 0.0, 0.0)){}
+	Pixel():z_buffer(0), color(Colour(0.0, 0.0, 0.0)), normal(Vector3D(0.0, 0.0, 0.0)){}
 	
-	Pixel(double z_buffer, Colour color):z_buffer(z_buffer), color(color){}
+	Pixel(double z_buffer, Colour color, Vector3D normal):z_buffer(z_buffer), color(color), normal(normal){}
 
 	double z_buffer;
 	Colour color;
+	Vector3D normal;
 
 	Pixel& operator =(const Pixel& p)
 	{
 		z_buffer = p.z_buffer;
 		color = p.color;		
+		normal = p.normal;
 		return *this;
 	}
 };
@@ -508,4 +510,8 @@ typedef struct Pixel pixel;
 
 float det(float a11, float a12,float a13,float a21,float a22,float a23,float a31,float a32,float a33);
 
+inline float clamp(float x, float a, float b)
+{
+	return x < a ? a : (x > b ? b : x);
+}
 #endif // CS488_ALGEBRA_HPP

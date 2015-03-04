@@ -1,10 +1,12 @@
 #ifndef CS488_PRIMITIVE_HPP
 #define CS488_PRIMITIVE_HPP
 
+#include <list>
 #include <vector>
 #include "algebra.hpp"
 #include "material.hpp"
 #include "image.hpp"
+#include "light.hpp"
 
 class Primitive {
 	public:
@@ -14,7 +16,7 @@ class Primitive {
 			m_material = m;
 		}
 
-		virtual int rayTracing(Point3D eye, Point3D p_world, pixel& p) = 0;
+		virtual int rayTracing(Point3D eye, Point3D p_world, Colour ambient, std::list<Light*> lights, pixel& p) = 0;
 
 	protected:
 		Material*  m_material;	
@@ -23,14 +25,14 @@ class Primitive {
 class Sphere : public Primitive {
 	public:
 		virtual ~Sphere();
-		virtual int rayTracing(Point3D eye, Point3D p_world, pixel& p)
+		virtual int rayTracing(Point3D eye, Point3D p_world, Colour ambient, std::list<Light*> lights, pixel& p)
 		{}
 };
 
 class Cube : public Primitive {
 	public:
 		virtual ~Cube();
-		virtual int rayTracing(Point3D eye, Point3D p_world, pixel& p){}
+		virtual int rayTracing(Point3D eye, Point3D p_world, Colour ambient, std::list<Light*> lights, pixel& p){}
 };
 
 class NonhierSphere : public Primitive {
@@ -41,7 +43,7 @@ class NonhierSphere : public Primitive {
 		}
 		virtual ~NonhierSphere();
 
-		virtual int rayTracing(Point3D eye, Point3D p_world, pixel& p);
+		virtual int rayTracing(Point3D eye, Point3D p_world, Colour ambient, std::list<Light*> lights, pixel& p);
 
 		Point3D getPosition()
 		{
@@ -64,7 +66,7 @@ class NonhierBox : public Primitive {
 		NonhierBox(const Point3D& pos, double size);
 
 		virtual ~NonhierBox();
-		virtual int rayTracing(Point3D eye, Point3D p_world, pixel& p);
+		virtual int rayTracing(Point3D eye, Point3D p_world, Colour ambient, std::list<Light*> lights, pixel& p);
 
 	private:
 		Point3D m_pos;

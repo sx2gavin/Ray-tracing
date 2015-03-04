@@ -80,7 +80,7 @@ void a4_render(// What to render
 		// std::cerr << "p_world = " << p_world << std::endl;
 
 
-		if (root->rayTracing(eye, p_world, p)) {
+		if (root->rayTracing(eye, p_world, ambient, lights, p)) {
 			img(x, y, 0) = p.color.R();
 			img(x, y, 1) = p.color.G();
 			img(x, y, 2) = p.color.B();

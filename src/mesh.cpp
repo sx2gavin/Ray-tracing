@@ -8,7 +8,7 @@ Mesh::Mesh(const std::vector<Point3D>& verts,
 {
 }
 
-int Mesh::rayTracing(Point3D eye, Point3D p_world, pixel& p)
+int Mesh::rayTracing(Point3D eye, Point3D p_world, Colour ambient, std::list<Light*> lights, pixel& p)
 {
 	int retVal = 0; 
 	Point3D p0;

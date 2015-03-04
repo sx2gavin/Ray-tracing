@@ -8,6 +8,8 @@ class Material {
 		virtual ~Material();
 		virtual void apply_gl() const = 0;
 		virtual Colour getDiffuseColor() const = 0;
+		virtual Colour getSpecularColor() const = 0;
+		virtual double getShininess() const = 0;
 
 	protected:
 		Material()
@@ -29,6 +31,10 @@ class PhongMaterial : public Material {
 		Colour getSpecularColor() const
 		{
 			return m_ks;
+		}
+		double getShininess() const
+		{
+			return m_shininess;
 		}
 
 	private:
