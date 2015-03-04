@@ -25,10 +25,10 @@ int NonhierSphere::rayTracing(Point3D eye, Point3D p_world, pixel& p)
 	double c = (eye - m_pos).dot(eye - m_pos) - m_radius * m_radius;
 	double roots[2]; 
 	
-	if (quadraticRoots(a, b, c, roots) == 1) {	
+	if (quadraticRoots(a, b, c, roots) == 1 && roots[0] > 0) {	
 		p.z_buffer = roots[0];
 		retVal = 1;
-	} else if (quadraticRoots(a, b, c, roots) > 1) {
+	} else if (quadraticRoots(a, b, c, roots) > 1 && std::min(roots[0], roots[1]) > 0) {
 		p.z_buffer = std::min(roots[0], roots[1]);
 		retVal = 1;
 	}

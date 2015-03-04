@@ -82,12 +82,18 @@ void a4_render(// What to render
 
 		Colour pixel_color(0, 0, 0);
 
+		// primary ray
 		if (root->rayTracing(eye, p_world, p)) {
 			// Adding Phong shading.
 			Point3D hitPoint = eye + p.z_buffer * (p_world - eye);
 			pixel_color  = ambient * p.material->getDiffuseColor();
 
 			for (std::list<Light*>::const_iterator I = lights.begin(); I != lights.end(); I++) { 
+				pixel temp;
+				// secondary ray, adding shadows.
+				if (root->rayTracing(hitPoint, (*I)->position, temp)) {
+					continue;
+				}	
 				Vector3D lightDirection = (*I)->position - hitPoint;
 				double distance = lightDirection.length();
 				double attenuation = 1 / ((*I)->falloff[0] + distance* (*I)->falloff[1] + distance * distance * (*I)->falloff[2]);
