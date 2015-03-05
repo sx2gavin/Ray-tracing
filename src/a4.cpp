@@ -2,6 +2,24 @@
 #include "image.hpp"
 #include "pixel.hpp"
 
+void render_background(int width, int height, Image *img) 
+{
+	// size of the grid
+	int l = 40;
+	for (int y = 0; y < height; y++) {
+		for (int x = 0; x < width; x++) {
+			if ( ((x / l) % 2 && (y / l) % 2) || (!((x / l) % 2) && !((y / l) % 2))) {
+				(*img)(x, y, 0) = 1.0;
+				(*img)(x, y, 1) = 1.0;
+				(*img)(x, y, 2) = 1.0;
+			} else {
+				(*img)(x, y, 0) = 0.0;
+				(*img)(x, y, 1) = 0.0;
+				(*img)(x, y, 2) = 0.0;
+			}
+		}
+	}	
+}
 void a4_render(// What to render
                SceneNode* root,
                // Where to output the image
@@ -30,6 +48,8 @@ void a4_render(// What to render
   std::cerr << "});" << std::endl;
 
   Image img(width, height, 3);
+
+  render_background(width, height, &img);
 
   Point3D p_world;
 
@@ -85,7 +105,7 @@ void a4_render(// What to render
 		// primary ray
 		if (root->rayTracing(eye, p_world, p)) {
 			// Adding Phong shading.
-			Point3D hitPoint = eye + p.z_buffer * (p_world - eye);
+			Point3D hitPoint = eye + (p.z_buffer - 0.001) * (p_world - eye);
 			pixel_color  = ambient * p.material->getDiffuseColor();
 
 			for (std::list<Light*>::const_iterator I = lights.begin(); I != lights.end(); I++) { 
@@ -115,7 +135,7 @@ void a4_render(// What to render
 
 				pixel_color =
 					// ambient color
-					pixel_color +
+					pixel_color + 
 					// diffuse color
 					p.material->getDiffuseColor() * ( cosTheta * (*I)->colour ) * attenuation +
 					// specular color

@@ -6,6 +6,8 @@
 #include "scene.hpp"
 #include "light.hpp"
 
+void render_background(int width, int height, Image *img);
+
 void a4_render(// What to render
                SceneNode* root,
                // Where to output the image

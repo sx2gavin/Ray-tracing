@@ -38,45 +38,6 @@ int NonhierSphere::rayTracing(Point3D eye, Point3D p_world, pixel& p)
 		p.normal = eye + p.z_buffer * (p_world - eye) - m_pos;
 	}
 
-	/*if (retVal) {
-	// Adding Phong shading.
-	
-		for (std::list<Light*>::const_iterator I = lights.begin(); I != lights.end(); I++) { 
-			Point3D onSphere = eye + p.z_buffer * (p_world - eye);
-			// Getting the normal of the point on the surface	
-			Vector3D normal = onSphere - m_pos;
-			Vector3D lightNormal = (*I)->position - onSphere;	
-			double distance = lightNormal.length();
-			double attenuation = 1 / ((*I)->falloff[0] + distance* (*I)->falloff[1] + distance * distance * (*I)->falloff[2]);
-
-			// diffuse
-			normal.normalize();
-			lightNormal.normalize();
-			float cosTheta = clamp(normal.dot(lightNormal), 0, 1);
-			// std::cerr << "normal = " << normal << std::endl;
-			// std::cerr << "lightNormal = " << lightNormal << std::endl;
-
-			Vector3D reflection = -lightNormal - 2 * ((-lightNormal).dot(normal)) * normal;
-			Vector3D camera = eye - p_world;
-			// std::cerr << "reflection = " << reflection << std::endl;
-			// std::cerr << "camera = " << camera << std::endl;
-
-			// specular
-			reflection.normalize();
-			camera.normalize();
-			float cosAlpha = clamp(camera.dot(reflection), 0, 1);
-
-			p.color = 
-				// ambient color 
-				p.color + 
-				// diffuse color
-				m_material->getDiffuseColor() * ( cosTheta * (*I)->colour ) * attenuation + 
-				// specular color
-				m_material->getSpecularColor() * ( std::pow(cosAlpha, m_material->getShininess()) * (*I)->colour) * attenuation;	
-			//	p.color = cosTheta * p.color * (*I)->colour;	
-
-		}
-	}*/
 	return retVal;
 }
 
@@ -175,7 +136,7 @@ int NonhierBox::rayTracing(Point3D eye, Point3D p_world,  pixel& p)
 			// p2 = m_verts[(*I)[2]];
 
 			n = (p1 - p0).cross(p2 - p0);
-			//num = - n.dot(eye - p0);
+			// num = - n.dot(eye - p0);
 
 			// std::cerr << "n = " << n << std::endl;
 			den = n.dot(p_world - eye);
@@ -209,13 +170,14 @@ int NonhierBox::rayTracing(Point3D eye, Point3D p_world,  pixel& p)
 			gamma = d2 / d;
 			t = d3 / d;
 
-			if ( beta >= 0 && gamma >= 0 && (beta + gamma) <= 1 && t > 0) {
+			if ( beta >= 0 && gamma >= 0 && (beta + gamma) <= 1 && t > 0.0) {
 				// the ray hits the triangle. 
 				retVal = 1;
 				if ( p.z_buffer == 0 || p.z_buffer > t) {
 					p.z_buffer = t;
 					p.material = m_material;
-					p.normal = (p0 - p1).cross(p1 - p2);
+					p.normal = n;
+					
 				}
 				break;
 			}

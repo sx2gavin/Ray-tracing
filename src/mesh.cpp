@@ -41,18 +41,13 @@ int Mesh::rayTracing(Point3D eye, Point3D p_world, pixel& p)
 		for (Face::const_iterator J = I->begin(); J != I->end() - 2; ++J) {
 
 			p0 = m_verts[(*I)[0]];
-			// p1 = m_verts[(*I)[1]];
-			// p2 = m_verts[(*I)[2]];
 			p1 = m_verts[*(J + 1)];
 			p2 = m_verts[*(J + 2)];
 
 			n = (p1 - p0).cross(p2 - p0);
 			//num = - n.dot(eye - p0);
-
-			// std::cerr << "n = " << n << std::endl;
 			den = n.dot(p_world - eye);
 
-			// std::cerr << "den = " << den << std::endl;
 			// if the ray doesn't hit the plane represented by the triangle.
 			if (den == 0) break;
 
@@ -81,13 +76,13 @@ int Mesh::rayTracing(Point3D eye, Point3D p_world, pixel& p)
 			t = d3 / d;
 
 
-			if ( beta >= 0 && gamma >= 0 && (beta + gamma) <= 1 && t > 0) {
+			if ( beta >= 0 && gamma >= 0 && (beta + gamma) <= 1 && t > 0.0) {
 				// the ray hits the triangle. 
 				retVal = 1;
 				if ( p.z_buffer == 0 || p.z_buffer > t ) {
 					p.z_buffer = t;
 					p.material = m_material;
-					p.normal = (p0 - p1).cross(p1 - p2); 
+					p.normal = n; 
 				}
 				break;
 			}
