@@ -5,7 +5,7 @@
 void render_background(int width, int height, Image *img) 
 {
 	// size of the grid
-	int l = 40;
+	int l = std::min(width, height) / 10;
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
 			if ( ((x / l) % 2 && (y / l) % 2) || (!((x / l) % 2) && !((y / l) % 2))) {

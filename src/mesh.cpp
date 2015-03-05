@@ -40,9 +40,9 @@ int Mesh::rayTracing(Point3D eye, Point3D p_world, pixel& p)
 	for (std::vector<Mesh::Face>::const_iterator I = m_faces.begin(); I != m_faces.end(); ++I) {
 		for (Face::const_iterator J = I->begin(); J != I->end() - 2; ++J) {
 
-			p0 = m_verts[(*I)[0]];
-			p1 = m_verts[*(J + 1)];
-			p2 = m_verts[*(J + 2)];
+			p0 = m_trans_verts[(*I)[0]];
+			p1 = m_trans_verts[*(J + 1)];
+			p2 = m_trans_verts[*(J + 2)];
 
 			n = (p1 - p0).cross(p2 - p0);
 			//num = - n.dot(eye - p0);
@@ -89,6 +89,14 @@ int Mesh::rayTracing(Point3D eye, Point3D p_world, pixel& p)
 		}		
 	}
 	return retVal;
+}
+
+void Mesh::transform(const Matrix4x4 t)
+{
+	m_trans_verts.clear();
+	for (std::vector<Point3D>::const_iterator I = m_verts.begin(); I != m_verts.end(); ++I) {
+		m_trans_verts.push_back(t * (*I));
+	}
 }
 
 std::ostream& operator<<(std::ostream& out, const Mesh& mesh)

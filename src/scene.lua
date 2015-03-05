@@ -30,9 +30,11 @@ s4 = gr.nh_sphere('s4', {1, 0, -1}, 1)
 scene_root:add_child(s4)
 s4:set_material(mat3)
 
-s2 = gr.nh_box('s2', {-0.5, 0, 0.5}, 0.25)
+s2 = gr.cube('s2')
 scene_root:add_child(s2)
 s2:set_material(mat2)
+s2:translate( 1, 0, 0)
+s2:scale(2, 0.5, 1)
 
 -- s3 = gr.nh_box('s3', {0, -1, 1}, 0.25)
 -- scene_root:add_child(s3)
@@ -41,4 +43,4 @@ s2:set_material(mat2)
 white_light = gr.light({-6.0, 0.0, 6.0}, {0.9, 0.9, 0.9}, {1, 0, 0})
 -- orange_light = gr.light({6.0, 0.0, 6.0}, {1.0, 0.0, 0.0}, {1, 0, 0})
 
-gr.render(scene_root, 'triangle.png', 500, 500, {-5, 0, 7}, {1, 0, -1}, {0, 1, 0}, 50, {0.1, 0.1, 0.1}, {white_light}) 
+gr.render(scene_root, 'triangle.png', 500, 500, {0, 0, 7}, {0, 0, -1}, {0, 1, 0}, 50, {0.1, 0.1, 0.1}, {white_light}) 

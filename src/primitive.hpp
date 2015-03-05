@@ -16,6 +16,7 @@ class Primitive {
 		{
 			m_material = m;
 		}
+		virtual void transform(const Matrix4x4 t){}
 
 		virtual int rayTracing(Point3D eye, Point3D p_world,  pixel& p) = 0;
 
@@ -28,12 +29,20 @@ class Sphere : public Primitive {
 		virtual ~Sphere();
 		virtual int rayTracing(Point3D eye, Point3D p_world,  pixel& p)
 		{}
+		std::vector<Point3D> m_verts;
+		std::vector< std::vector<int> > m_faces;
 };
 
 class Cube : public Primitive {
 	public:
+		Cube();
 		virtual ~Cube();
-		virtual int rayTracing(Point3D eye, Point3D p_world,  pixel& p){}
+		virtual int rayTracing(Point3D eye, Point3D p_world,  pixel& p);
+		virtual void transform(const Matrix4x4 t);
+	private:
+		std::vector<Point3D> m_trans_verts;
+		std::vector<Point3D> m_verts;
+		std::vector< std::vector<int> > m_faces;
 };
 
 class NonhierSphere : public Primitive {
@@ -55,7 +64,6 @@ class NonhierSphere : public Primitive {
 		{
 			return m_radius;
 		}
-
 
 	private:
 		Point3D m_pos;
