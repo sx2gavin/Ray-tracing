@@ -22,7 +22,7 @@ scene_root = gr.node('root')
 -- scene_root:add_child(triangle_2);
 -- triangle_2:set_material(mat2);
 
-s1 = gr.nh_sphere('s1', {0, 0, 0}, 0.5)
+s1 = gr.sphere('s1')
 scene_root:add_child(s1)
 s1:set_material(mat1)
 

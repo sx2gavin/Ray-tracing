@@ -26,9 +26,16 @@ class Primitive {
 
 class Sphere : public Primitive {
 	public:
+		Sphere();
 		virtual ~Sphere();
-		virtual int rayTracing(Point3D eye, Point3D p_world,  pixel& p)
-		{}
+		virtual int rayTracing(Point3D eye, Point3D p_world,  pixel& p);
+		virtual void transform(const Matrix4x4 t);
+		void addTriangle(std::vector<Point3D>* sphere_vertices, std::vector<Point3D> vertices, int index_1, int index_2, int index_3);
+		void addTriangle(std::vector<Point3D>* sphere_vertices, Point3D point_1, Point3D point_2, Point3D point_3);
+
+	private:
+		Point3D getMiddlePoint(Point3D a, Point3D b);
+		std::vector<Point3D> m_trans_verts;
 		std::vector<Point3D> m_verts;
 		std::vector< std::vector<int> > m_faces;
 };

@@ -34,7 +34,7 @@ class SceneNode {
 		void add_child(SceneNode* child)
 		{
 			m_children.push_back(child);
-			child->set_parent_transform(m_trans);
+			child->set_parent_transform(m_parent_trans * m_trans);
 		}
 
 		void remove_child(SceneNode* child)

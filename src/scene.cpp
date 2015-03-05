@@ -1,5 +1,5 @@
-#include "scene.hpp"
 #include <iostream>
+#include "scene.hpp"
 
 SceneNode::SceneNode(const std::string& name)
 : m_name(name)
@@ -33,7 +33,7 @@ void SceneNode::rotate(char axis, double angle)
 	data[14] = 0;
 	data[15] = 1;
 
-	if (axis == 'x') { // rotate on x-axis
+	if (axis == 'x' || axis == 'X') { // rotate on x-axis
 		data[0] = 1; // m11
 		data[1] = 0; // m12
 		data[2] = 0; // m13
@@ -45,7 +45,7 @@ void SceneNode::rotate(char axis, double angle)
 		data[10] = cos(angle * M_PI / 180.0); // m33
 		Matrix4x4 temp_matrix(data);
 		m_trans = m_trans * temp_matrix;
-	} else if (axis == 'y') {// rotate on y-axis
+	} else if (axis == 'y' || axis == 'Y') {// rotate on y-axis
 		data[0] = cos(angle * M_PI / 180.0); // m11
 		data[1] = 0; // m12 
 		data[2] = sin(angle * M_PI / 180.0); // m13
@@ -57,7 +57,7 @@ void SceneNode::rotate(char axis, double angle)
 		data[10] = cos(angle * M_PI / 180.0); // m33
 		Matrix4x4 temp_matrix(data);
 		m_trans = m_trans * temp_matrix;
-	} else if (axis == 'z') {// rotate on z-axis
+	} else if (axis == 'z' || axis == 'Z') {// rotate on z-axis
 		data[0] = cos(angle * M_PI / 180.0); // m11 
         data[1] = -sin(angle * M_PI / 180.0); // m12 
         data[2] = 0; // m13 
